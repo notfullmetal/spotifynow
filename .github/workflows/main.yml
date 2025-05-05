@@ -23,13 +23,6 @@ jobs:
           username: ${{ secrets.DOCKERUN }}
           password: ${{ secrets.DOCKERPW }}
 
-      - name: Login to GHCR
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Extract Docker metadata
         id: meta
         uses: docker/metadata-action@v5
@@ -47,7 +40,4 @@ jobs:
           -t notfullmetal/spotifynow:${{ env.SHORT_SHA }} \
           -t notfullmetal/spotifynow:${{ github.ref_name }} \
           -t notfullmetal/spotifynow:latest \
-          -t $GH_IMAGE_REPOSITORY:${{ env.SHORT_SHA }} \
-          -t $GH_IMAGE_REPOSITORY:${{ github.ref_name }} \
-          -t $GH_IMAGE_REPOSITORY:latest \
           . --push
