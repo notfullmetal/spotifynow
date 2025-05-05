@@ -1,5 +1,5 @@
 FROM python:3.8.2-slim-buster
-LABEL maintainer="Spotipie Team"
+LABEL maintainer="SpotifyNow Team"
 
 # Install PostgreSQL client and other dependencies
 RUN apt-get update && apt-get install -y \

@@ -4,7 +4,7 @@ services:
   # PostgreSQL Database
   postgres:
     image: postgres:14-alpine
-    container_name: spotipie-postgres
+    container_name: spotifynow-postgres
     restart: always
     environment:
       POSTGRES_USER: ${POSTGRES_USER}
@@ -16,7 +16,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - spotipie-network
+      - spotifynow-network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 10s
@@ -28,10 +28,10 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spotipie-bot
+    container_name: spotifynow-bot
     restart: always
     networks:
-      - spotipie-network
+      - spotifynow-network
     depends_on:
       postgres:
         condition: service_healthy
@@ -54,5 +54,5 @@ volumes:
 
 # Define the network
 networks:
-  spotipie-network:
+  spotifynow-network:
     driver: bridge 
