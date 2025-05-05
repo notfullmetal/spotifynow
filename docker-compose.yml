@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:14-alpine
+    container_name: spotipie-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+    ports:
+      - "5432:5432"
+    networks:
+      - spotipie-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Spotipie Bot
+  spotipie:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spotipie-bot
+    restart: always
+    networks:
+      - spotipie-network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - API_KEY=${API_KEY}
+      - SPOTIFY_CLIENT_ID=${SPOTIFY_CLIENT_ID}
+      - SPOTIFY_CLIENT_SECRET=${SPOTIFY_CLIENT_SECRET}
+      - REDIRECT_URI=${REDIRECT_URI}
+      - TEMP_CHANNEL=${TEMP_CHANNEL}
+      - JSON_BLOB_ID=${JSON_BLOB_ID}
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_HOST=postgres  # Use the service name as the host
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=${POSTGRES_DB}
+      - LASTFM_API_KEY=${LASTFM_API_KEY}
+
+volumes:
+  postgres_data:
+
+# Define the network
+networks:
+  spotipie-network:
+    driver: bridge 

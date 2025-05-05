@@ -1,0 +1,7 @@
+python-telegram-bot==13.5
+requests
+Pillow
+pymongo==3.10.0
+psycopg2-binary
+SQLAlchemy
+
